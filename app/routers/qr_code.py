@@ -20,8 +20,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Define an endpoint to create QR codes
 # It responds to POST requests at "/qr-codes/" and returns data matching the QRCodeResponse model
-# This endpoint is tagged as "QR Codes" in the API docs and returns HTTP 201 when a QR code is created successfully
-@router.post("/qr-codes/", response_model=QRCodeResponse, status_code=status.HTTP_200_OK, tags=["QR Codes"])
+# This endpoint is tagged as "QR Codes" in the API docs and returns HTTP 201 when a QR code is created successfully - updated to 201 from 200
+@router.post("/qr-codes/", response_model=QRCodeResponse, status_code=status.HTTP_201_CREATED, tags=["QR Codes"])
 async def create_qr_code(request: QRCodeRequest, token: str = Depends(oauth2_scheme)):
     # Log the creation request
     logging.info(f"Creating QR code for URL: {request.url}")
@@ -40,9 +40,9 @@ async def create_qr_code(request: QRCodeRequest, token: str = Depends(oauth2_sch
     # Check if the QR code already exists to prevent duplicates
     if qr_code_full_path.exists():
         logging.info("QR code already exists.")
-        # If it exists, return a conflict response
+        # If it exists, return a conflict response - updated 200 to 409 here
         return JSONResponse(
-            status_code=status.HTTP_200_OK,
+            status_code=status.HTTP_409_CONFLICT,
             content={"message": "QR code already exists.", "links": links}
         )
 
