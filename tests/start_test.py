@@ -50,10 +50,7 @@ async def test_create_and_delete_qr_code():
             "size": 10,
         }
         create_response = await ac.post("/qr-codes/", json=qr_request, headers=headers)
-        if create_response.status_code not in [201, 409]:
-            error_message = f"Unexpected status code received: {create_response.status_code}. Response: {create_response.json()}"
-            logging.error(error_message)
-            assert False, error_message
+        assert create_response.status_code in [201, 409]  # Created or already exists
 
         # If the QR code was created, attempt to delete it
         if create_response.status_code == 201:
@@ -61,5 +58,3 @@ async def test_create_and_delete_qr_code():
             qr_filename = qr_code_url.split('/')[-1]
             delete_response = await ac.delete(f"/qr-codes/{qr_filename}", headers=headers)
             assert delete_response.status_code == 204  # No Content, successfully deleted
-
-logging.basicConfig(level=logging.INFO)
