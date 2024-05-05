@@ -8,7 +8,7 @@ async def test_login_for_access_token():
         "username": "admin",
         "password": "secret",
     }
-    async with AsyncClient(app=app, base_url="http://localhost:8000") as ac:
+    async with AsyncClient(app=app, base_url="http://localhost:8000/docs") as ac:
         response = await ac.post("/token", data=form_data)
     assert response.status_code == 200
     assert "access_token" in response.json()
