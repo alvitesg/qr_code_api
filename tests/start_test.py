@@ -1,3 +1,4 @@
+import logging
 import pytest
 from httpx import AsyncClient
 from app.main import app  # Import your FastAPI app
@@ -49,7 +50,9 @@ async def test_create_and_delete_qr_code():
             "size": 10,
         }
         create_response = await ac.post("/qr-codes/", json=qr_request, headers=headers)
-        assert create_response.status_code in [201, 409]  # Created or already exists
+        if create_response.status_code not in [201, 409]:
+            logging.error(f"Unexpected status code received: {create_response.status_code}. Response: {create_response.json()}")
+        assert create_response.status_code in [201, 409], f"Expected 201 or 409, got {create_response.status_code}: {create_response.text}"  # Created or already exists
 
         # If the QR code was created, attempt to delete it
         if create_response.status_code == 201:
