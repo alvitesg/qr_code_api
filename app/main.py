@@ -13,7 +13,7 @@ setup_logging()
 create_directory(QR_DIRECTORY)
 
 # This creates an instance of the FastAPI application.
-app = FastAPI()
+app = FastAPI(
     title="QR Code Manager",
     description="A FastAPI application for creating, listing available codes, and deleting QR codes. "
                 "It also supports OAuth for secure access.",
